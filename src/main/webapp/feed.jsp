@@ -7,7 +7,7 @@ if (session.getAttribute("loggedInUserEmail") == null) {
     return;
 } 
 %>
-<jsp:include page="./header.jsp" />
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +17,7 @@ if (session.getAttribute("loggedInUserEmail") == null) {
     <title>Lost And Found</title>
 </head>
 <body>
-
+	<jsp:include page="./header.jsp" />
     <div class="card_heading">
         <span>
             Lost Items:

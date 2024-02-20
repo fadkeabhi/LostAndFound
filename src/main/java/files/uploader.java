@@ -72,7 +72,7 @@ public class uploader extends HttpServlet {
             pstmt.executeUpdate();
             
             
-            
+            response.sendRedirect("./item.jsp?id=" + itemId);
             response.getWriter().println("File uploaded successfully.");
         } catch (IOException e) {
             response.getWriter().println("File upload failed due to " + e);

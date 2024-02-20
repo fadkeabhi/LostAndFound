@@ -1,5 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*, db.DBUtil" %>
+<%
+if (session.getAttribute("loggedInUserEmail") == null) {
+    response.sendRedirect("index.jsp");
+    return;
+} 
+
+String userIdString = session.getAttribute("loggedInUserId").toString();
+int userId = Integer.parseInt(userIdString);
+%>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -11,11 +20,32 @@
   </head>
 
   <body id="body">
+    <jsp:include page="./header.jsp" />
     
     <%-- Retrieve item ID from request parameter --%>
     <% String itemIdParam = request.getParameter("id");
        int itemId = Integer.parseInt(itemIdParam); // Assuming itemIdParam is the item ID passed from another page
     %>
+    
+    
+        <!-- upload_image_div form  -->
+    <div class="post_item" id="upload_image_div">
+        <h2>Upload image</h2>
+        <form action="upload?id=<%= itemId %>" method="post" enctype="multipart/form-data">
+            <label for="file">Select Image:</label><br>
+            <input type="file" id="file" name="file" accept="image/*" required><br><br>
+			
+            
+            <!-- <label for="image">Image</label><br>
+            <input type="file" id="image" name="image"><br> -->
+
+            <input type="submit" value="Upload" class="but" id="green">
+            <input type="button" value="Close" class="but" id="red" id="close_but" onclick="hideImageForm()">
+        </form>
+    </div>
+    
+    
+    
     
     <%-- Retrieve item details from database --%>
     <% try {
@@ -29,10 +59,13 @@
                String description = rs.getString("description");
                String question = rs.getString("question");
                String itemType = rs.getString("item_type");
-               String postedBy = rs.getString("posted_by");
+               String postedByString = rs.getString("posted_by");
                String postedByFName = rs.getString("first_name");
                String postedByLName = rs.getString("last_name");
                String postedByPhone = rs.getString("phone_number");
+               String posted_at = rs.getString("posted_at");
+               
+               int postedBy = Integer.parseInt(postedByString);
                
                // Display item details
     %>
@@ -132,34 +165,34 @@
           </div>
           <div class="item">
             <span>Created at:</span>
-            <span class="from_user">12/12/2020</span>
+            <span class="from_user"><%= posted_at %></span>
           </div>
           <div class="item" id="item1">
+          
+          
+          <% if(postedBy == userId) { %>
+  
             <button id="red" class="but1">
                 Delete item
             </button>
             <button id="blue" class="but1">
                 Edit item
             </button>
-            <button id="green" class="but1">
+            <button id="green" class="but1" onclick="displayImageForm()">
                 Upload image
             </button>
+            <% } else{%>
+  
+            <button id="blue" class="but1">
+                Respond
+            </button>
+            <% }%>
           </div>
         </div>
       </div>
     </div>
     <hr>
 
-
-              
-               
-               
-               
-               <form action="upload?id=<%= itemId %>" method="post" enctype="multipart/form-data">
-			        <label for="file">Select Image:</label>
-			        <input type="file" id="file" name="file" accept="image/*"><br><br>
-			        <input type="submit" value="Upload">
-			    </form>
     
     <%         } else {
                    // Item not found
@@ -209,9 +242,24 @@
         </div>
       </div>
     </div>
+    
+    
+
+    
+    <script>
+		function displayImageForm()
+		{
+		    document.getElementById("upload_image_div").style.display="block";
+		}
+		function hideImageForm()
+		{
+		    document.getElementById("upload_image_div").style.display="none";
+		}
+	</script>
 
 
     <script src="./js/slider.js"></script>
+    <jsp:include page="./footer.jsp" />
   </body>
 </html>
 
