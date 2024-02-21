@@ -18,7 +18,7 @@ if (session.getAttribute("loggedInUserEmail") == null) {
             <li class="heading">Lost and Found</li>
             <li><a class="navElement" onclick="displayItemForm()">Post item</a></li>
             <li><a href="feed.jsp" class="navElement">Feed</a></li>
-            <li><a href="#" class="navElement">Responses</a></li>
+            <li><a href="responses.jsp" class="navElement">Responses</a></li>
             <li><a href="my_listing.jsp" class="navElement">My listings</a></li>
             <li><a href="./logout.jsp" class="navElement">Sign out</a></li>
         </ul>
