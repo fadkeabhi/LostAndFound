@@ -28,21 +28,9 @@ int userId = Integer.parseInt(userIdString);
     %>
     
     
-        <!-- upload_image_div form  -->
-    <div class="post_item" id="upload_image_div">
-        <h2>Upload image</h2>
-        <form action="upload?id=<%= itemId %>" method="post" enctype="multipart/form-data">
-            <label for="file">Select Image:</label><br>
-            <input type="file" id="file" name="file" accept="image/*" required><br><br>
-			
-            
-            <!-- <label for="image">Image</label><br>
-            <input type="file" id="image" name="image"><br> -->
 
-            <input type="submit" value="Upload" class="but" id="green">
-            <input type="button" value="Close" class="but" id="red" id="close_but" onclick="hideImageForm()">
-        </form>
-    </div>
+    
+    
     
     
     
@@ -69,6 +57,44 @@ int userId = Integer.parseInt(userIdString);
                
                // Display item details
     %>
+    
+    
+        <!-- upload_image_div form  -->
+    <div class="post_item" id="upload_image_div">
+        <h2>Upload image</h2>
+        <form action="upload?id=<%= itemId %>" method="post" enctype="multipart/form-data">
+            <label for="file">Select Image:</label><br>
+            <input type="file" id="file" name="file" accept="image/*" required><br><br>
+			
+            
+            <!-- <label for="image">Image</label><br>
+            <input type="file" id="image" name="image"><br> -->
+
+            <input type="submit" value="Upload" class="but" id="green">
+            <input type="button" value="Close" class="but" id="red" id="close_but" onclick="hideImageForm()">
+        </form>
+    </div>
+    
+    
+    <!-- edit_item_div form -->
+    <div class="post_item" id="edit_item_div">
+        <h2>Edit item</h2>
+        <form method="post" action="item_edit.jsp">
+        	
+            <input type="text" id="itemName" name="itemId" required hidden="hidden" value="<%= itemId %>"><br>
+            <label for="itemName">item name*</label><br>
+            <input type="text" id="itemName" name="itemName" required placeholder="Enter item" value="<%= itemName %>"><br>
+            <label for="description">Description*</label><br>
+            <input type="text" id="description" name="description" required placeholder="short description" value="<%= description %>"><br>
+            <label for="question">Enter a Question Based on the item*</label><br>
+            <input type="text" id="question" name="question" required placeholder="question" value="<%= question %>"><br>
+            <label for="itemType">item type*</label><br>
+            
+
+            <input type="submit" value="Submit" class="but" id="green">
+            <input type="button" value="Close" class="but" id="red" id="close_but" onclick="hideEditForm()">
+        </form>
+    </div>
 
 
     <div class="container">
@@ -153,11 +179,11 @@ int userId = Integer.parseInt(userIdString);
           </div>
           <div class="item">
             <span>Item type:</span>
-            <span class="from_user"><%= question %></span>
+            <span class="from_user"><%= itemType %></span>
           </div>
           <div class="item">
             <span>Question:</span>
-            <span class="from_user"><%= itemType %></span>
+            <span class="from_user"><%= question %></span>
           </div>
           <div class="item">
             <span>Posted By Name:</span>
@@ -175,7 +201,7 @@ int userId = Integer.parseInt(userIdString);
             <button id="red" class="but1">
                 Delete item
             </button>
-            <button id="blue" class="but1">
+            <button id="blue" class="but1" onclick="displayEditForm()">
                 Edit item
             </button>
             <button id="green" class="but1" onclick="displayImageForm()">
@@ -254,6 +280,17 @@ int userId = Integer.parseInt(userIdString);
 		function hideImageForm()
 		{
 		    document.getElementById("upload_image_div").style.display="none";
+		}
+	</script>
+	
+	<script>
+		function displayEditForm()
+		{
+		    document.getElementById("edit_item_div").style.display="block";
+		}
+		function hideEditForm()
+		{
+		    document.getElementById("edit_item_div").style.display="none";
 		}
 	</script>
 

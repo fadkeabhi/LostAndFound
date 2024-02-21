@@ -19,7 +19,7 @@ if (session.getAttribute("loggedInUserEmail") == null) {
             <li><a class="navElement" onclick="displayItemForm()">Post item</a></li>
             <li><a href="feed.jsp" class="navElement">Feed</a></li>
             <li><a href="#" class="navElement">Responses</a></li>
-            <li><a href="#" class="navElement">My listings</a></li>
+            <li><a href="my_listing.jsp" class="navElement">My listings</a></li>
             <li><a href="./logout.jsp" class="navElement">Sign out</a></li>
         </ul>
     </nav>
@@ -28,7 +28,7 @@ if (session.getAttribute("loggedInUserEmail") == null) {
 <!-- hidden cards -->
     <div class="post_item" id="post_item">
         <h2>Post item</h2>
-        <form method="post" action="create_item.jsp">
+        <form method="post" action="item_create.jsp">
             <label for="itemName">item name*</label><br>
             <input type="text" id="itemName" name="itemName" required placeholder="Enter item"><br>
             <label for="description">Description*</label><br>
