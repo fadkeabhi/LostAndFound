@@ -8,6 +8,7 @@ if (session.getAttribute("loggedInUserEmail") == null) {
 
 String userIdString = session.getAttribute("loggedInUserId").toString();
 int userId = Integer.parseInt(userIdString);
+
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,20 +26,14 @@ int userId = Integer.parseInt(userIdString);
     <%-- Retrieve item ID from request parameter --%>
     <% String itemIdParam = request.getParameter("id");
        int itemId = Integer.parseInt(itemIdParam); // Assuming itemIdParam is the item ID passed from another page
+       int postedBy = 0;
     %>
     
-    
-
-    
-    
-    
-    
-    
-    
+   
     <%-- Retrieve item details from database --%>
     <% try {
            Connection conn = DBUtil.getConnection();
-           String sql = "SELECT * FROM items LEFT JOIN users ON users.user_id = items.posted_by WHERE item_id = ?";
+           String sql = "SELECT * FROM items LEFT JOIN users ON users.user_id = items.posted_by WHERE item_id = ? AND is_active=1";
            PreparedStatement pstmt = conn.prepareStatement(sql);
            pstmt.setInt(1, itemId);
            ResultSet rs = pstmt.executeQuery();
@@ -53,7 +48,7 @@ int userId = Integer.parseInt(userIdString);
                String postedByPhone = rs.getString("phone_number");
                String posted_at = rs.getString("posted_at");
                
-               int postedBy = Integer.parseInt(postedByString);
+               postedBy = Integer.parseInt(postedByString);
                
                // Display item details
     %>
@@ -65,13 +60,22 @@ int userId = Integer.parseInt(userIdString);
         <form action="upload?id=<%= itemId %>" method="post" enctype="multipart/form-data">
             <label for="file">Select Image:</label><br>
             <input type="file" id="file" name="file" accept="image/*" required><br><br>
-			
             
-            <!-- <label for="image">Image</label><br>
-            <input type="file" id="image" name="image"><br> -->
-
             <input type="submit" value="Upload" class="but" id="green">
             <input type="button" value="Close" class="but" id="red" id="close_but" onclick="hideImageForm()">
+        </form>
+    </div>
+    
+    <!-- delete_item_div form  -->
+    <div class="post_item" id="delete_item_div">
+        <h2>Delete Item</h2>
+        <form action="item_delete.jsp" method="post">
+        
+            <input type="text" id="itemIdDelete" name="itemId" hidden="hidden" required value="<%= itemId %>">
+            Are you sure you want to delete this item. This action can't be undone.
+            <br>
+            <input type="submit" value=Delete class="but" id="red">
+            <input type="button" value="Close" class="but" id="green" id="close_but" onclick="hideDeleteForm()">
         </form>
     </div>
     
@@ -81,18 +85,34 @@ int userId = Integer.parseInt(userIdString);
         <h2>Edit item</h2>
         <form method="post" action="item_edit.jsp">
         	
-            <input type="text" id="itemName" name="itemId" required hidden="hidden" value="<%= itemId %>"><br>
+            <input type="text" id="itemId" name="itemId" required hidden="hidden" value="<%= itemId %>"><br>
             <label for="itemName">item name*</label><br>
             <input type="text" id="itemName" name="itemName" required placeholder="Enter item" value="<%= itemName %>"><br>
             <label for="description">Description*</label><br>
             <input type="text" id="description" name="description" required placeholder="short description" value="<%= description %>"><br>
             <label for="question">Enter a Question Based on the item*</label><br>
             <input type="text" id="question" name="question" required placeholder="question" value="<%= question %>"><br>
-            <label for="itemType">item type*</label><br>
+
             
 
             <input type="submit" value="Submit" class="but" id="green">
             <input type="button" value="Close" class="but" id="red" id="close_but" onclick="hideEditForm()">
+        </form>
+    </div>
+    
+    <!-- response_item_div form -->
+    <div class="post_item" id="response_item_div">
+        <h2>Response</h2>
+        <form method="post" action="response_create.jsp">
+        	
+            <input type="text" id="itemId" name="itemId" required hidden="hidden" value="<%= itemId %>"><br>
+            
+            <label for="question">Enter Your Response*</label><br>
+            <textarea name="ressponse_text" required placeholder="Response" style="width:100%"></textarea>
+           
+           <br>
+            <input type="submit" value="Submit" class="but" id="green">
+            <input type="button" value="Close" class="but" id="red" id="close_but" onclick="hideResponseForm()">
         </form>
     </div>
 
@@ -198,7 +218,7 @@ int userId = Integer.parseInt(userIdString);
           
           <% if(postedBy == userId) { %>
   
-            <button id="red" class="but1">
+            <button id="red" class="but1" onclick="displayDeleteForm()">
                 Delete item
             </button>
             <button id="blue" class="but1" onclick="displayEditForm()">
@@ -207,17 +227,80 @@ int userId = Integer.parseInt(userIdString);
             <button id="green" class="but1" onclick="displayImageForm()">
                 Upload image
             </button>
-            <% } else{%>
+            <% } else{
+            
+               sql = "SELECT * FROM responses WHERE item_id = ? AND response_by = ? AND is_valid = 'Accepted'";
+	           pstmt = conn.prepareStatement(sql);
+	           pstmt.setInt(1, itemId);
+	           pstmt.setInt(2, userId);
+	           ResultSet rs2 = pstmt.executeQuery();
+	           
+	           if (rs2.next()) {
+                       %>
+                        Contact : <%= postedByPhone %>
+                       <%
+		           } else { %>
   
-            <button id="blue" class="but1">
+            <button id="blue" class="but1" onclick="displayResponseForm()">
                 Respond
             </button>
+            
+            <% }%>
             <% }%>
           </div>
         </div>
       </div>
     </div>
     <hr>
+    
+    <% if(postedBy == userId) { %>
+    
+    <div class="question question1">
+      <h3>Responses:</h3>
+      <div class="inner-content">
+      
+      <%
+	      sql = "SELECT * FROM responses WHERE item_id = ?";
+	      pstmt = conn.prepareStatement(sql);
+	      pstmt.setInt(1, itemId);
+	      rs = pstmt.executeQuery();
+	      while (rs.next()) {
+	          %>
+
+	          	<div class="content content1">
+		          <div class="item">
+		            <span >Answer to Your Question:</span>
+		            <span class="from_user"><%= rs.getString("response_text") %></span>
+		          </div>
+		          
+		          <% if(rs.getString("is_valid").equals("Pending") ) { %>
+		          <div class="item" id="item1">
+		            <button id="green" class="but1 but11" onclick="location.href='response_update.jsp?item_id=<%= itemId%>&response_id=<%= rs.getString("response_id")%>&status=1'">
+		              Accept
+		            </button>
+		            <button id="red" class="but1 but11" onclick="location.href='response_update.jsp?item_id=<%= itemId%>&response_id=<%= rs.getString("response_id")%>&status=2'">
+		              Reject
+		            </button>    
+		          </div>
+		          <% } else { %>
+		          <div class="item" id="item1">
+		            <%= rs.getString("is_valid") %>
+		          </div>
+		          <% } %>
+		          
+		        </div>
+		        
+	          <%
+	      }
+
+	      %>
+	      
+      </div>
+    </div>
+    
+    <% }
+    // end of if statment
+    %>
 
     
     <%         } else {
@@ -234,42 +317,12 @@ int userId = Integer.parseInt(userIdString);
     <%
 //  Questions section below
     %>
+    
+    
 
-    <div class="question question1">
-      <h3>Responses:</h3>
-      <div class="inner-content">
-        <div class="content content1">
-          <div class="item">
-            <span >Answer to Your Question:</span>
-            <span class="from_user">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, voluptas.</span>
-          </div>
-          <div class="item" id="item1">
-            <button id="green" class="but1 but11">
-              Accept
-            </button>
-            <button id="red" class="but1 but11">
-              Reject
-            </button>    
-          </div>
-        </div>
-        <div class="content content1">
-          <div class="item">
-            <span >Answer to Your Question:</span>
-            <span class="from_user">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos, veritatis.</span>
-          </div>
-          <div class="item" id="item1">
-            <button id="green" class="but1 but11">
-              Accept
-            </button>
-            <button id="red" class="but1 but11">
-              Reject
-            </button>    
-          </div>
-        </div>
-      </div>
-    </div>
     
     
+
 
     
     <script>
@@ -291,6 +344,28 @@ int userId = Integer.parseInt(userIdString);
 		function hideEditForm()
 		{
 		    document.getElementById("edit_item_div").style.display="none";
+		}
+	</script>
+	
+	<script>
+		function displayDeleteForm()
+		{
+		    document.getElementById("delete_item_div").style.display="block";
+		}
+		function hideDeleteForm()
+		{
+		    document.getElementById("delete_item_div").style.display="none";
+		}
+	</script>
+	
+		<script>
+		function displayResponseForm()
+		{
+		    document.getElementById("response_item_div").style.display="block";
+		}
+		function hideResponseForm()
+		{
+		    document.getElementById("response_item_div").style.display="none";
 		}
 	</script>
 

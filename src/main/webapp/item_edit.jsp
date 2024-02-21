@@ -14,12 +14,13 @@ if (request.getMethod().equals("POST")) {
     
     try {
         Connection conn = DBUtil.getConnection();
-        String sql = "UPDATE items SET item_name=?, description=?, question=? WHERE item_id=?";
+        String sql = "UPDATE items SET item_name=?, description=?, question=? WHERE item_id=? AND posted_by = ?";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setString(1, itemName);
         pstmt.setString(2, description);
         pstmt.setString(3, question);
         pstmt.setInt(4, itemId);
+        pstmt.setInt(5, Integer.parseInt(session.getAttribute("loggedInUserId").toString()));
         pstmt.executeUpdate();
         
         conn.close();
