@@ -15,8 +15,8 @@ int userId = Integer.parseInt(userIdString);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/slider.css">
+    <link rel="stylesheet" href="./css/style.css">
     <title>Lost And Found</title>
 </head>
 
@@ -29,11 +29,11 @@ int userId = Integer.parseInt(userIdString);
       </span>
     </div>
     
-    <div style="display:flex">
+    <div class="content">
     
     <% 
     Connection conn = DBUtil.getConnection();
-            String sql = "SELECT item_name, description, item_type, posted_at, items.item_id FROM `responses` LEFT JOIN items ON items.item_id = responses.item_id WHERE response_by = ?";
+            String sql = "SELECT item_name, description, response_text, question, item_type, posted_at, items.item_id FROM `responses` LEFT JOIN items ON items.item_id = responses.item_id WHERE response_by = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, userId);
             ResultSet rs = pstmt.executeQuery();
@@ -41,7 +41,7 @@ int userId = Integer.parseInt(userIdString);
             while (rs.next()) {
             	%>
             	
-            	<div class="content content1">
+            	<div class="content1" style="width:200px; border: 2px solid black; border-radius: 10px; ">
 			        <div class="item">
 			          <span>Item name:</span>
 			          <span class="from_user"><%= rs.getString("item_name") %></span>
@@ -53,6 +53,14 @@ int userId = Integer.parseInt(userIdString);
 			        <div class="item">
 			          <span>Item type:</span>
 			          <span class="from_user"><%= rs.getString("item_type") %></span>
+			        </div>
+			        <div class="item">
+			          <span>Question:</span>
+			          <span class="from_user"><%= rs.getString("question") %></span>
+			        </div>
+			        <div class="item">
+			          <span>Your Response:</span>
+			          <span class="from_user"><%= rs.getString("response_text") %></span>
 			        </div>
 			        <div class="item">
 			          <span>Created at:</span>

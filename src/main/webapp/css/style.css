@@ -85,7 +85,28 @@ h3
 .content
 {
     display: flex;
+    display: grid;
+  grid-template-columns: auto ;
 }
+
+@media (min-width: 500px) {
+  .content { grid-template-columns: auto auto; }
+}
+
+@media (min-width: 750px) {
+  .content { grid-template-columns: auto auto auto; }
+}
+
+@media (min-width: 900px) {
+  .content { grid-template-columns: auto auto auto auto; }
+}
+
+@media (min-width: 1200px) {
+  .content { grid-template-columns: auto auto auto auto auto; }
+}
+
+
+
 #current_time
 {
     margin-top: 10px;
