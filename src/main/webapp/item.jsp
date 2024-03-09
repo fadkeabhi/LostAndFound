@@ -132,7 +132,7 @@ int userId = Integer.parseInt(userIdString);
 		           while (rs1.next()) {
                        %>
                         <div class="slides">
-                            <img src="./uploads/<%= rs1.getString("photo_name")%>" alt="image" />
+                            <img src="display?file=<%= rs1.getString("photo_name")%>" alt="image" />
                         </div>
                        <%
 		           }
@@ -176,7 +176,7 @@ int userId = Integer.parseInt(userIdString);
                         <div class="column">
                             <img
                             class="slide-thumbnail"
-                            src="./uploads/<%= rs1.getString("photo_name")%>"
+                            src="display?file=<%= rs1.getString("photo_name")%>"
                             onclick="currentSlide(<%= i++ %>)"
                             alt="Caption Two"
                             />

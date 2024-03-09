@@ -40,6 +40,8 @@ public class uploader extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String uploadDir = "C:\\Users\\fadke\\eclipse-workspace\\LostAndFound\\src\\main\\webapp\\uploads\\"; // Change the path as needed
+        
+        
         File dir = new File(uploadDir);
         if (!dir.exists()) {
             dir.mkdirs();

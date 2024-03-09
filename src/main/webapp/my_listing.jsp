@@ -53,7 +53,7 @@ if (session.getAttribute("loggedInUserEmail") == null) {
             	
             	<div class="card" onclick="location.href='item.jsp?id=<%= itemId %>';">
 		            <div class="card_image">
-		                <img src="./uploads/<%= photoName %>" alt="Avatar" style="width:80%">
+		                <img src="display?file=<%= photoName %>" alt="Avatar" style="width:80%">
 		            </div>
 		            <div class="card_content">
 		                <p class="card_item">Item: <span><%= itemName %></span></p>
@@ -108,7 +108,7 @@ if (session.getAttribute("loggedInUserEmail") == null) {
             	
             	<div class="card" onclick="location.href='item.jsp?id=<%= itemId %>';">
 		            <div class="card_image">
-		                <img src="./uploads/<%= photoName %>" alt="Avatar" style="width:80%">
+		                <img src="display?file=<%= photoName %>" alt="Avatar" style="width:80%">
 		            </div>
 		            <div class="card_content">
 		                <p class="card_item">Item: <span><%= itemName %></span></p>
