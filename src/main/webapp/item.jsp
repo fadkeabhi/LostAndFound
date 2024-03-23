@@ -18,6 +18,14 @@ int userId = Integer.parseInt(userIdString);
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/slider.css" />
     <title>Lost And Found</title>
+    <style>
+    	.new-style{
+	    	width: 95vw;
+		    display: flex;
+		    flex-wrap: nowrap;
+		    overflow-x: auto;
+	    }
+    </style>
   </head>
 
   <body id="body">
@@ -103,12 +111,15 @@ int userId = Integer.parseInt(userIdString);
     <!-- response_item_div form -->
     <div class="post_item" id="response_item_div">
         <h2>Response</h2>
-        <form method="post" action="response_create.jsp">
+        <form method="post" action="response_create" enctype="multipart/form-data">
         	
             <input type="text" id="itemId" name="itemId" required hidden="hidden" value="<%= itemId %>"><br>
             
+            <label for="file">Select Image:</label><br>
+            <input type="file" id="file" name="file" accept="image/*" required><br><br>
+            
             <label for="question">Enter Your Response*</label><br>
-            <textarea name="ressponse_text" required placeholder="Response" style="width:100%"></textarea>
+            <textarea name="response_text" required placeholder="Response" style="width:100%"></textarea>
            
            <br>
             <input type="submit" value="Submit" class="but" id="green">
@@ -257,17 +268,29 @@ int userId = Integer.parseInt(userIdString);
     
     <div class="question question1">
       <h3>Responses:</h3>
-      <div class="inner-content">
+      <div class="new-style">
       
       <%
-	      sql = "SELECT * FROM responses WHERE item_id = ?";
+	      sql = "SELECT * FROM responses WHERE item_id = ? ORDER BY response_id DESC";
 	      pstmt = conn.prepareStatement(sql);
 	      pstmt.setInt(1, itemId);
 	      rs = pstmt.executeQuery();
 	      while (rs.next()) {
+	    	  
+	    	  String response_image = rs.getString("response_image");
+	          	if(response_image == null){
+	          		response_image = "../No_Image_Available.jpg";
+	          	}
 	          %>
 
-	          	<div class="content content1">
+	          	<div class="content content1" style="width:250px">
+	          	
+	          	  <div class="item">
+		            <a target="_blank" href="./display?file=<%= response_image%>">
+		            <image src="./display?file=<%= response_image%>" style="width: -webkit-fill-available;" />
+		            </a>
+		          </div>
+		          
 		          <div class="item">
 		            <span >Answer to Your Question:</span>
 		            <span class="from_user"><%= rs.getString("response_text") %></span>

@@ -28,4 +28,14 @@
     <servlet-name>display</servlet-name>
     <url-pattern>/display</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>response_create</display-name>
+    <servlet-name>response_create</servlet-name>
+    <servlet-class>files.response_create</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>response_create</servlet-name>
+    <url-pattern>/response_create</url-pattern>
+  </servlet-mapping>
 </web-app>
